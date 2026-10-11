@@ -1,0 +1,3270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SCAMSHIELD | Threat Detection</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at top right,
+                    #102752 0%,
+                    #07101f 35%,
+                    #050b16 75%
+                );
+
+            color: #e8f0ff;
+
+            min-height: 100vh;
+
+            overflow-x: hidden;
+        }
+
+
+        /* =========================================
+           APP LAYOUT
+        ========================================= */
+
+        .app {
+            display: flex;
+            height: 100vh;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+
+        /* =========================================
+           SIDEBAR
+        ========================================= */
+
+        .sidebar {
+
+            width: 245px;
+
+            min-height: 100vh;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #071222,
+                    #050b16
+                );
+
+            border-right: 1px solid rgba(100, 140, 200, 0.14);
+
+            padding: 26px 16px;
+
+            position: fixed;
+
+            left: 0;
+            top: 0;
+            bottom: 0;
+
+            z-index: 20;
+            height: 100vh;
+            min-height: 0;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 0 7px;
+
+            margin-bottom: 42px;
+        }
+
+
+        .brand-icon {
+
+            width: 45px;
+            height: 45px;
+
+            border-radius: 13px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 23px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #1677ff,
+                    #11b9dc
+                );
+
+            box-shadow:
+                0 0 25px rgba(20, 125, 255, 0.35);
+        }
+
+
+        .brand-name {
+
+            font-size: 20px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.5px;
+        }
+
+
+        .brand-sub {
+
+            color: #61728f;
+
+            font-size: 10px;
+
+            margin-top: 3px;
+
+            letter-spacing: 0.8px;
+        }
+
+
+        .menu-title {
+
+            color: #52647f;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            letter-spacing: 1.4px;
+
+            padding: 0 12px;
+
+            margin-bottom: 10px;
+        }
+
+
+        .nav-item {
+
+            width: 100%;
+
+            padding: 13px 13px;
+
+            margin-bottom: 6px;
+
+            border-radius: 10px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            color: #8494ae;
+
+            font-size: 13px;
+
+            cursor: pointer;
+
+            transition: 0.25s;
+
+            border: 1px solid transparent;
+        }
+
+
+        .nav-item:hover {
+
+            background: rgba(36, 103, 181, 0.12);
+
+            color: #dbe9ff;
+        }
+
+
+        .nav-item.active {
+
+            color: #64a9ff;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(23, 112, 218, 0.22),
+                    rgba(23, 112, 218, 0.06)
+                );
+
+            border-left: 2px solid #2683ff;
+
+            box-shadow:
+                inset 0 0 25px rgba(24, 115, 220, 0.06);
+        }
+
+
+        .nav-icon {
+
+            width: 22px;
+
+            text-align: center;
+
+            font-size: 16px;
+        }
+
+
+        .phase-label {
+
+            margin-top: 28px;
+
+            margin-bottom: 10px;
+
+            padding: 0 12px;
+
+            font-size: 9px;
+
+            color: #4e6380;
+
+            letter-spacing: 1.3px;
+
+            font-weight: 800;
+        }
+
+
+        .locked {
+
+            opacity: 0.58;
+
+            cursor: default;
+        }
+
+
+        .locked:hover {
+
+            background: transparent;
+
+            color: #8494ae;
+        }
+
+
+        .lock {
+
+            margin-left: auto;
+
+            font-size: 11px;
+        }
+
+
+        .engine-card {
+
+            position: absolute;
+
+            left: 16px;
+            right: 16px;
+            bottom: 20px;
+
+            padding: 16px;
+
+            border-radius: 13px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(17, 31, 56, 0.95),
+                    rgba(8, 17, 31, 0.95)
+                );
+
+            border: 1px solid rgba(100, 145, 210, 0.12);
+        }
+
+
+        .engine-top {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            margin-bottom: 8px;
+        }
+
+
+        .online {
+
+            color: #19d99b;
+
+            font-size: 10px;
+        }
+
+
+        .online::before {
+
+            content: "";
+
+            width: 7px;
+            height: 7px;
+
+            display: inline-block;
+
+            border-radius: 50%;
+
+            background: #20df9d;
+
+            box-shadow: 0 0 10px #20df9d;
+
+            margin-right: 6px;
+        }
+
+
+        .engine-text {
+
+            color: #536680;
+
+            font-size: 10px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =========================================
+           MAIN
+        ========================================= */
+
+        .main {
+            margin-left: 245px;
+            width: calc(100% - 245px);
+            height: 100vh;
+            min-height: 0;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            padding: 28px 32px 45px;
+        }
+
+
+        .topbar {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 28px;
+        }
+
+
+        .page-title {
+
+            font-size: 28px;
+
+            font-weight: 800;
+
+            letter-spacing: -0.6px;
+        }
+
+
+        .page-subtitle {
+
+            margin-top: 5px;
+
+            color: #607391;
+
+            font-size: 12px;
+        }
+
+
+        .top-actions {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+        }
+
+
+        .search {
+
+            width: 215px;
+
+            height: 38px;
+
+            border-radius: 9px;
+
+            border: 1px solid rgba(100, 140, 200, 0.13);
+
+            background: rgba(11, 23, 42, 0.8);
+
+            color: white;
+
+            padding: 0 14px;
+
+            outline: none;
+
+            font-size: 11px;
+        }
+
+
+        .search::placeholder {
+
+            color: #52647e;
+        }
+
+
+        .notification {
+            cursor: pointer;
+            color: #ffd84d;
+            width: 38px;
+            height: 38px;
+
+            border-radius: 10px;
+
+            background: rgba(13, 27, 49, 0.9);
+
+            border: 1px solid rgba(100, 140, 200, 0.13);
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 15px;
+        }
+
+
+        .profile {
+            cursor: pointer;
+            border: 0;
+            color: white;
+            width: 38px;
+            height: 38px;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #1389ff,
+                    #08b9d5
+                );
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-weight: 800;
+
+            font-size: 12px;
+        }
+
+
+        /* =========================================
+           STAT CARDS
+        ========================================= */
+
+        .stats {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 16px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .stat-card {
+
+            min-height: 116px;
+
+            padding: 19px;
+
+            border-radius: 15px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(15, 30, 54, 0.95),
+                    rgba(8, 17, 31, 0.96)
+                );
+
+            border: 1px solid rgba(91, 133, 192, 0.13);
+
+            position: relative;
+
+            overflow: hidden;
+
+            transition: 0.25s;
+        }
+
+
+        .stat-card:hover {
+
+            transform: translateY(-2px);
+
+            border-color: rgba(65, 142, 237, 0.32);
+
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+
+        .stat-card::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 90px;
+            height: 90px;
+
+            right: -35px;
+            bottom: -45px;
+
+            border-radius: 50%;
+
+            background: rgba(30, 127, 255, 0.08);
+        }
+
+
+        .stat-label {
+
+            color: #617593;
+
+            font-size: 10px;
+
+            letter-spacing: 0.6px;
+
+            text-transform: uppercase;
+        }
+
+
+        .stat-number {
+
+            font-size: 28px;
+
+            font-weight: 800;
+
+            margin-top: 10px;
+        }
+
+
+        .stat-status {
+
+            color: #16dca0;
+
+            font-size: 10px;
+
+            margin-top: 5px;
+        }
+
+
+        .stat-status.warning {
+
+            color: #ffb84d;
+        }
+
+
+        /* =========================================
+           SCANNERS
+        ========================================= */
+
+        .scanner-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 18px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .scanner-card {
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(12, 27, 49, 0.98),
+                    rgba(7, 16, 29, 0.98)
+                );
+
+            border: 1px solid rgba(83, 128, 190, 0.14);
+
+            border-radius: 16px;
+
+            padding: 23px;
+
+            transition: 0.3s;
+        }
+
+
+        .scanner-card:hover {
+
+            border-color: rgba(43, 128, 237, 0.4);
+
+            box-shadow:
+                0 15px 45px rgba(0, 0, 0, 0.18);
+        }
+
+
+        .scanner-heading {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .scanner-icon {
+
+            width: 42px;
+            height: 42px;
+
+            border-radius: 11px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 19px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(30, 112, 235, 0.2),
+                    rgba(0, 189, 213, 0.08)
+                );
+
+            border: 1px solid rgba(54, 134, 241, 0.25);
+        }
+
+
+        .scanner-title {
+
+            font-size: 15px;
+
+            font-weight: 800;
+        }
+
+
+        .scanner-description {
+
+            color: #5d7190;
+
+            font-size: 10px;
+
+            margin-top: 4px;
+        }
+
+
+        .field-label {
+
+            color: #6480a5;
+
+            font-size: 9px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .input {
+
+            width: 100%;
+
+            border-radius: 9px;
+
+            border: 1px solid rgba(100, 139, 194, 0.16);
+
+            background: #030b18;
+
+            color: #dce9ff;
+
+            outline: none;
+
+            padding: 14px;
+
+            font-size: 12px;
+
+            transition: 0.2s;
+        }
+
+
+        .input:focus {
+
+            border-color: #217ff0;
+
+            box-shadow:
+                0 0 0 3px rgba(33, 127, 240, 0.08);
+        }
+
+
+        textarea.input {
+
+            min-height: 110px;
+
+            resize: vertical;
+
+            line-height: 1.5;
+        }
+
+
+        .scan-button {
+
+            width: 100%;
+
+            border: none;
+
+            height: 43px;
+
+            border-radius: 9px;
+
+            margin-top: 13px;
+
+            color: white;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.2px;
+
+            cursor: pointer;
+
+            background:
+                linear-gradient(
+                    100deg,
+                    #2867ec,
+                    #069fbe
+                );
+
+            box-shadow:
+                0 7px 20px rgba(24, 112, 229, 0.18);
+
+            transition: 0.25s;
+        }
+
+
+        .scan-button:hover {
+
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 10px 28px rgba(24, 135, 238, 0.3);
+        }
+
+
+        .scan-button:active {
+
+            transform: translateY(0);
+        }
+
+
+        .scan-button.loading {
+
+            opacity: 0.75;
+
+            cursor: wait;
+        }
+
+
+        /* =========================================
+           RESULTS
+        ========================================= */
+
+        .results-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1.45fr 1fr;
+
+            gap: 18px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .panel {
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(11, 25, 46, 0.97),
+                    rgba(6, 15, 28, 0.97)
+                );
+
+            border: 1px solid rgba(84, 126, 187, 0.13);
+
+            border-radius: 16px;
+
+            min-height: 235px;
+
+            padding: 22px;
+        }
+
+
+        .panel-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 18px;
+        }
+
+
+        .panel-title {
+
+            font-size: 13px;
+
+            font-weight: 800;
+        }
+
+
+        .badge {
+
+            padding: 6px 9px;
+
+            border-radius: 6px;
+
+            font-size: 8px;
+
+            font-weight: 800;
+
+            background: rgba(39, 76, 123, 0.15);
+
+            color: #587da9;
+        }
+
+
+        .empty-state {
+
+            min-height: 160px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            flex-direction: column;
+
+            text-align: center;
+        }
+
+
+        .empty-icon {
+
+            width: 54px;
+            height: 54px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 25px;
+
+            background:
+                rgba(22, 96, 179, 0.1);
+
+            margin-bottom: 13px;
+        }
+
+
+        .empty-title {
+
+            color: #7487a3;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+
+        .empty-text {
+
+            color: #43546d;
+
+            font-size: 9px;
+
+            margin-top: 6px;
+        }
+
+
+        /* RESULT ACTIVE */
+
+        .result-content {
+
+            display: none;
+
+            align-items: center;
+
+            gap: 30px;
+        }
+
+
+        .result-content.show {
+
+            display: flex;
+        }
+
+
+        .score-ring {
+
+            width: 145px;
+            height: 145px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            flex-shrink: 0;
+
+            position: relative;
+
+            background:
+                conic-gradient(
+                    #278aff 0deg,
+                    #06b9d1 0deg,
+                    #15263f 0deg
+                );
+        }
+
+
+        .score-ring::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 116px;
+            height: 116px;
+
+            border-radius: 50%;
+
+            background: #081425;
+        }
+
+
+        .score-inner {
+
+            position: relative;
+
+            z-index: 2;
+
+            text-align: center;
+        }
+
+
+        .score-number {
+
+            font-size: 30px;
+
+            font-weight: 900;
+        }
+
+
+        .score-max {
+
+            font-size: 9px;
+
+            color: #546984;
+
+            margin-top: -2px;
+        }
+
+
+        .result-info {
+
+            flex: 1;
+        }
+
+
+        .risk-badge {
+
+            display: inline-block;
+
+            padding: 6px 10px;
+
+            border-radius: 6px;
+
+            font-size: 9px;
+
+            font-weight: 900;
+
+            margin-bottom: 11px;
+
+            background: rgba(22, 214, 159, 0.12);
+
+            color: #18dfa4;
+        }
+
+
+        .risk-badge.suspicious {
+
+            color: #ffbd51;
+
+            background: rgba(255, 189, 81, 0.12);
+        }
+
+
+        .risk-badge.high {
+
+            color: #ff5d69;
+
+            background: rgba(255, 72, 86, 0.12);
+        }
+
+
+        .threat-name {
+
+            font-size: 20px;
+
+            font-weight: 850;
+
+            margin-bottom: 8px;
+        }
+
+
+        .result-description {
+
+            color: #5f7390;
+
+            font-size: 10px;
+
+            line-height: 1.6;
+
+            margin-bottom: 14px;
+        }
+
+
+        .threat-type {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding: 7px 10px;
+
+            border-radius: 7px;
+
+            background: rgba(25, 61, 102, 0.25);
+
+            color: #8ca7cb;
+
+            font-size: 9px;
+        }
+
+
+        /* =========================================
+           INDICATORS
+        ========================================= */
+
+        .indicators {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 8px;
+        }
+
+
+        .indicator {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 10px;
+
+            border-radius: 9px;
+
+            background: rgba(2, 10, 22, 0.65);
+
+            border: 1px solid rgba(76, 119, 178, 0.08);
+
+            font-size: 10px;
+
+            color: #8396b2;
+        }
+
+
+        .indicator-icon {
+
+            width: 27px;
+            height: 27px;
+
+            border-radius: 7px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            flex-shrink: 0;
+
+            background: rgba(36, 111, 230, 0.12);
+
+            color: #5ba1ff;
+        }
+
+
+        .indicator.danger .indicator-icon {
+
+            color: #ff6872;
+
+            background: rgba(255, 70, 85, 0.11);
+        }
+
+
+        .indicator.warning .indicator-icon {
+
+            color: #ffc45d;
+
+            background: rgba(255, 184, 68, 0.11);
+        }
+
+
+        /* =========================================
+           RECENT ACTIVITY
+        ========================================= */
+
+        .recent-panel {
+
+            padding-bottom: 12px;
+        }
+
+
+        .recent-list {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+        }
+
+
+        .recent-item {
+
+            min-height: 53px;
+
+            display: flex;
+
+            align-items: center;
+
+            padding: 9px 12px;
+
+            border-radius: 9px;
+
+            background: rgba(3, 11, 23, 0.58);
+
+            border: 1px solid rgba(71, 111, 167, 0.08);
+        }
+
+
+        .recent-icon {
+
+            width: 31px;
+            height: 31px;
+
+            border-radius: 8px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(35, 101, 189, 0.11);
+
+            margin-right: 11px;
+        }
+
+
+        .recent-main {
+
+            flex: 1;
+        }
+
+
+        .recent-type {
+
+            font-size: 10px;
+
+            font-weight: 750;
+        }
+
+
+        .recent-time {
+
+            font-size: 8px;
+
+            color: #43566f;
+
+            margin-top: 3px;
+        }
+
+
+        .recent-score {
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            margin-right: 11px;
+        }
+
+
+        .recent-risk {
+
+            font-size: 7px;
+
+            font-weight: 900;
+
+            padding: 5px 7px;
+
+            border-radius: 5px;
+
+            color: #18dca2;
+
+            background: rgba(22, 220, 162, 0.09);
+        }
+
+
+        .recent-risk.suspicious {
+
+            color: #ffbd4f;
+
+            background: rgba(255, 189, 79, 0.09);
+        }
+
+
+        .recent-risk.high {
+
+            color: #ff626c;
+
+            background: rgba(255, 74, 88, 0.09);
+        }
+
+
+        .no-history {
+
+            color: #40536c;
+
+            font-size: 10px;
+
+            padding: 20px;
+
+            text-align: center;
+        }
+
+
+        /* =========================================
+           TOAST
+        ========================================= */
+
+        .toast {
+
+            position: fixed;
+
+            right: 25px;
+
+            bottom: 25px;
+
+            padding: 13px 17px;
+
+            border-radius: 10px;
+
+            background: #0e2039;
+
+            border: 1px solid rgba(61, 133, 220, 0.3);
+
+            box-shadow:
+                0 15px 45px rgba(0, 0, 0, 0.35);
+
+            color: #dbeaff;
+
+            font-size: 11px;
+
+            opacity: 0;
+
+            transform: translateY(15px);
+
+            pointer-events: none;
+
+            transition: 0.3s;
+
+            z-index: 100;
+        }
+
+
+        .toast.show {
+
+            opacity: 1;
+
+            transform: translateY(0);
+        }
+
+
+        .toast.error {
+
+            border-color: rgba(255, 80, 90, 0.4);
+
+            color: #ff9ca3;
+        }
+
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 1100px) {
+
+            .stats {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .scanner-grid,
+            .results-grid {
+
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+        @media (max-width: 750px) {
+
+            .sidebar {
+
+                width: 70px;
+
+                padding: 20px 8px;
+            }
+
+
+            .brand {
+
+                justify-content: center;
+            }
+
+
+            .brand-name,
+            .brand-sub,
+            .menu-title,
+            .phase-label,
+            .nav-item span:not(.nav-icon),
+            .lock,
+            .engine-card {
+
+                display: none;
+            }
+
+
+            .brand-icon {
+
+                width: 42px;
+                height: 42px;
+            }
+
+
+            .nav-item {
+
+                justify-content: center;
+
+                padding: 13px 5px;
+            }
+
+
+            .main {
+
+                margin-left: 70px;
+
+                width: calc(100% - 70px);
+
+                padding: 20px 15px;
+            }
+
+
+            .top-actions .search {
+
+                display: none;
+            }
+
+
+            .page-title {
+
+                font-size: 22px;
+            }
+
+
+            .stats {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .result-content {
+
+                flex-direction: column;
+
+                text-align: center;
+            }
+
+        }
+
+    
+/* Integrated ScamSathi investigation modules — original ScamShield layout retained */
+
+        .nav-item { user-select:none; }
+        .nav-item[aria-current="page"] { color:#64a9ff; background:linear-gradient(90deg,rgba(23,112,218,.22),rgba(23,112,218,.06)); border-left:2px solid #2683ff; }
+        .workspace-hidden { display:none !important; }
+        .top-actions { position:relative; }
+        .notification-panel { position:absolute; right:48px; top:48px; width:min(370px,82vw); max-height:65vh; overflow:auto; z-index:80; background:#0a1728; border:1px solid #284465; border-radius:13px; padding:14px; box-shadow:0 18px 60px #0009; }
+        .notification-panel h3 {font-size:13px;margin-bottom:10px;}
+        .notification-row {padding:10px;border-bottom:1px solid #203651;font-size:11px;line-height:1.5;}
+        .notification-row:last-child {border-bottom:0;}
+        .notification-row small {display:block;color:#8197b6;margin-top:4px;}
+        .notification { position:relative; }
+        .notification-count {position:absolute;top:-4px;right:-4px;min-width:15px;height:15px;padding:0 3px;border-radius:10px;background:#f05b72;color:white;font-size:9px;display:grid;place-items:center;}
+        @media(max-width:750px){.main{height:100vh;}.sidebar{height:100vh;overflow-y:auto;}}
+
+.module-section{margin-top:26px;scroll-margin-top:24px}.module-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:16px}.module-title{font-size:17px;font-weight:800;color:#e8f0ff}.module-subtitle{font-size:11px;color:#7f93b1;margin-top:6px;line-height:1.6}.module-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.module-card{background:linear-gradient(145deg,#0e1c31,#0a1424);border:1px solid rgba(100,140,200,.19);border-radius:14px;padding:18px;min-width:0}.module-card h3{font-size:13px;margin-bottom:7px}.module-card p{color:#8ea2c1;font-size:11px;line-height:1.65}.module-input{width:100%;background:#071323;border:1px solid #29415f;border-radius:8px;padding:11px;color:#e8f0ff;outline:none;margin:6px 0 12px}.module-input:focus{border-color:#3485ff}.module-label{font-size:10px;letter-spacing:.8px;text-transform:uppercase;color:#a4b6d0;display:block;margin-top:12px}.module-button{background:linear-gradient(110deg,#2876fa,#16b8d0);border:0;border-radius:8px;padding:10px 13px;color:white;font-size:11px;font-weight:800;cursor:pointer;margin:5px 5px 5px 0}.module-button.secondary{background:#12243c;border:1px solid #2b4567;color:#d9e8ff}.module-output{border:1px solid #233b59;background:#071323;border-radius:9px;padding:12px;margin-top:12px;color:#c9d9f0;font-size:11px;line-height:1.65;overflow-wrap:anywhere}.module-list{display:grid;gap:8px;margin-top:12px}.module-item{border:1px solid #203651;background:#0a1728;border-radius:9px;padding:11px;font-size:11px;line-height:1.6;overflow-wrap:anywhere}.module-item strong{color:#e7f1ff}.module-pill{display:inline-block;border-radius:5px;padding:4px 7px;background:#152e4b;color:#b9d4f5;font-size:9px;margin:2px}.module-status{color:#53d9a4}.module-warning{color:#ffc45d}.module-danger{color:#ff8292}.module-empty{color:#8095b4;text-align:center;padding:17px;border:1px dashed #29415f;border-radius:9px;font-size:11px}.module-toolbar{display:flex;gap:7px;flex-wrap:wrap;align-items:center}.module-toolbar .module-input{max-width:180px}.flow-step{display:flex;gap:10px;align-items:flex-start;padding:10px;border-bottom:1px solid #1e314a}.flow-step:last-child{border-bottom:0}.flow-num{border-radius:50%;background:#173b65;color:#8fd6ff;min-width:25px;height:25px;display:grid;place-items:center;font-weight:800}.module-note{font-size:10px;color:#7186a4;line-height:1.65;margin-top:12px}@media(max-width:850px){.module-grid{grid-template-columns:1fr}}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                🛡️
+            </div>
+
+            <div>
+
+                <div class="brand-name">
+                    SCAMSHIELD
+                </div>
+
+                <div class="brand-sub">
+                    THREAT DETECTION
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="menu-title">
+            MAIN MENU
+        </div>
+
+
+        <div class="nav-item active" id="dashboardNav" onclick="showDashboard()" aria-current="page">
+
+            <span class="nav-icon">
+                ◈
+            </span>
+
+            <span>
+                Dashboard
+            </span>
+
+        </div>
+
+
+        <div class="phase-label">
+            PHASE 2 · EXPLAIN
+        </div>
+
+
+        <div class="nav-item"
+             onclick="goToModule('scamDnaModule')">
+
+            <span class="nav-icon">
+                🧬
+            </span>
+
+            <span>
+                Scam DNA
+            </span>
+
+        </div>
+
+
+        <div class="nav-item"
+             onclick="goToModule('attackFlowModule')">
+
+            <span class="nav-icon">
+                ⇩
+            </span>
+
+            <span>
+                Attack Flow
+            </span>
+
+        </div>
+
+
+        <div class="nav-item"
+             onclick="goToModule('qrModule')">
+
+            <span class="nav-icon">
+                ▦
+            </span>
+
+            <span>
+                QR Scanner
+            </span>
+
+        </div>
+
+
+        <div class="nav-item" onclick="goToModule('digitalForensicsModule')">
+            <span class="nav-icon">⌕</span>
+            <span>Digital Forensics</span>
+        </div>
+
+        <div class="phase-label">
+            PHASE 3 · PROTECT
+        </div>
+
+
+        <div class="nav-item"
+             onclick="goToModule('incidentModule')">
+
+            <span class="nav-icon">
+                🛡
+            </span>
+
+            <span>
+                Incident Response
+            </span>
+
+        </div>
+
+
+        <div class="nav-item"
+             onclick="goToModule('reportsModule')">
+
+            <span class="nav-icon">
+                ▤
+            </span>
+
+            <span>
+                Scam Reports
+            </span>
+
+        </div>
+
+
+        <div class="nav-item"
+             onclick="goToModule('historyModule')">
+
+            <span class="nav-icon">
+                ◷
+            </span>
+
+            <span>
+                Threat History
+            </span>
+
+        </div>
+
+
+        <div class="engine-card">
+
+            <div class="engine-top">
+
+                <span>
+                    Engine Status
+                </span>
+
+                <span class="online">
+                    Online
+                </span>
+
+            </div>
+
+            <div class="engine-text">
+                Phase 1 detection engine is active.
+            </div>
+
+        </div>
+
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main">
+
+
+        <!-- TOP BAR -->
+
+        <div class="topbar">
+
+            <div>
+
+                <div class="page-title">
+                    Security Dashboard
+                </div>
+
+                <div class="page-subtitle">
+                    Real-time scam and phishing detection
+                </div>
+
+            </div>
+
+
+            <div class="top-actions">
+
+                <input
+                    class="search"
+                    placeholder="🔍 Search dashboard..."
+                    type="text"
+                >
+
+                <button class="notification" id="notificationButton" type="button" onclick="toggleNotifications(event)" aria-label="Notifications" aria-expanded="false">
+                    🔔<span id="notificationCount" class="notification-count" style="display:none">0</span>
+                </button>
+                <button class="profile" id="profileButton" type="button" onclick="openAuthModal()" aria-label="Profile and account">S</button>
+                <div id="notificationPanel" class="notification-panel" style="display:none">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><h3>Notifications & recent activity</h3><button class="module-button secondary" onclick="loadNotifications()">REFRESH</button></div>
+                  <div id="notificationItems"><div class="module-empty">Loading activity…</div></div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             STATISTICS
+        ================================================== -->
+
+        <section class="stats dashboard-content" id="dashboardStats">
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Total Scans
+                </div>
+
+                <div
+                    class="stat-number"
+                    id="totalScans"
+                >
+                    0
+                </div>
+
+                <div class="stat-status">
+                    Detection engine active
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Threats Detected
+                </div>
+
+                <div
+                    class="stat-number"
+                    id="threatsDetected"
+                >
+                    0
+                </div>
+
+                <div class="stat-status warning">
+                    High + suspicious
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    High Risk
+                </div>
+
+                <div
+                    class="stat-number"
+                    id="highRisk"
+                >
+                    0
+                </div>
+
+                <div class="stat-status warning">
+                    Requires attention
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Engine Status
+                </div>
+
+                <div class="stat-number">
+                    100%
+                </div>
+
+                <div class="stat-status">
+                    ● Operational
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             SCANNERS
+        ================================================== -->
+
+        <section class="scanner-grid dashboard-content" id="dashboardScanners">
+
+
+            <!-- URL SCANNER -->
+
+            <div class="scanner-card">
+
+                <div class="scanner-heading">
+
+                    <div class="scanner-icon">
+                        🔗
+                    </div>
+
+                    <div>
+
+                        <div class="scanner-title">
+                            URL Scanner
+                        </div>
+
+                        <div class="scanner-description">
+                            Analyze suspicious links and domains
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="field-label">
+                    Suspicious URL
+                </div>
+
+
+                <input
+                    id="urlInput"
+                    class="input"
+                    type="text"
+                    placeholder="https://example.com/login"
+                >
+
+
+                <button
+                    id="urlButton"
+                    class="scan-button"
+                    onclick="scanURL()"
+                >
+
+                    🔍 &nbsp; SCAN URL
+
+                </button>
+
+
+            </div>
+
+
+            <!-- MESSAGE SCANNER -->
+
+            <div class="scanner-card">
+
+                <div class="scanner-heading">
+
+                    <div class="scanner-icon">
+                        💬
+                    </div>
+
+                    <div>
+
+                        <div class="scanner-title">
+                            Message Scanner
+                        </div>
+
+                        <div class="scanner-description">
+                            Analyze messages for scam patterns
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="field-label">
+                    Suspicious Message
+                </div>
+
+
+                <textarea
+                    id="messageInput"
+                    class="input"
+                    placeholder="Paste a suspicious message here..."
+                ></textarea>
+
+
+                <button
+                    id="messageButton"
+                    class="scan-button"
+                    onclick="scanMessage()"
+                >
+
+                    🛡 &nbsp; SCAN MESSAGE
+
+                </button>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             RESULT AREA
+        ================================================== -->
+
+        <section class="results-grid dashboard-content" id="dashboardResults">
+
+
+            <!-- LATEST ANALYSIS -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        Latest Security Analysis
+                    </div>
+
+                    <div class="badge">
+                        PHASE 1 · DETECT
+                    </div>
+
+                </div>
+
+
+                <!-- EMPTY -->
+
+                <div
+                    id="emptyResult"
+                    class="empty-state"
+                >
+
+                    <div class="empty-icon">
+                        🛡️
+                    </div>
+
+                    <div class="empty-title">
+                        No scan performed yet
+                    </div>
+
+                    <div class="empty-text">
+                        Run a URL or message scan to see the security analysis.
+                    </div>
+
+                </div>
+
+
+                <!-- RESULT -->
+
+                <div
+                    id="resultContent"
+                    class="result-content"
+                >
+
+                    <div
+                        id="scoreRing"
+                        class="score-ring"
+                    >
+
+                        <div class="score-inner">
+
+                            <div
+                                id="scoreNumber"
+                                class="score-number"
+                            >
+                                0
+                            </div>
+
+                            <div class="score-max">
+                                / 100
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="result-info">
+
+                        <div
+                            id="riskBadge"
+                            class="risk-badge"
+                        >
+                            SAFE
+                        </div>
+
+
+                        <div
+                            id="threatName"
+                            class="threat-name"
+                        >
+                            No Obvious Threat
+                        </div>
+
+
+                        <div class="result-description">
+                            Score generated using SCAMSHIELD's Phase 1 detection rules.
+                        </div>
+
+
+                        <div class="threat-type">
+
+                            🎯
+
+                            <span>
+                                Threat Type:
+                            </span>
+
+                            <strong id="threatType">
+                                No Obvious Threat
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- INDICATORS -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        Scam Indicators
+                    </div>
+
+                    <div
+                        id="indicatorCount"
+                        class="badge"
+                    >
+                        0 DETECTED
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="indicatorList"
+                    class="indicators"
+                >
+
+                    <div class="indicator">
+
+                        <div class="indicator-icon">
+                            ✓
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                No Major Indicators
+                            </strong>
+
+                            <div
+                                style="
+                                    color:#465974;
+                                    font-size:8px;
+                                    margin-top:3px;
+                                "
+                            >
+                                No scan has been performed yet.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             RECENT ACTIVITY
+        ================================================== -->
+
+        <section class="panel recent-panel dashboard-content" id="dashboardRecent">
+
+
+            <div class="panel-header">
+
+                <div class="panel-title">
+                    Recent Scan Activity
+                </div>
+
+                <div class="badge">
+                    LOCAL SESSION
+                </div>
+
+            </div>
+
+
+            <div
+                id="recentList"
+                class="recent-list"
+            >
+
+                <div class="no-history">
+                    Your recent scans will appear here.
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+    
+
+        <!-- SCAMSATHI INTEGRATION: INCIDENT RESPONSE WORKSPACE -->
+        <section class="module-section" id="digitalForensicsModule">
+          <div class="module-head"><div><div class="module-title">⌕ Digital Forensics Laboratory</div><div class="module-subtitle">A dedicated ScamSathi-inspired investigation workspace: extract indicators from pasted artefacts, fingerprint text, and preserve the results for case follow-up. This is a triage aid, not a full forensic suite.</div></div><span class="module-pill">FORENSIC TRIAGE</span></div>
+          <div class="module-grid">
+            <div class="module-card"><h3>1 · Artefact / IOC extraction</h3><p>Paste message text, email headers, chat excerpts, or log snippets. Extract candidate URLs, domains, email addresses, IPs, hashes, and phone-like strings.</p><label class="module-label">Artefact text</label><textarea id="forensicIocText" class="module-input" rows="7" placeholder="Paste suspicious message, headers, or log text here…"></textarea><button class="module-button" onclick="extractForensicIOCs()">EXTRACT INDICATORS</button><button class="module-button secondary" onclick="document.getElementById('forensicIocText').value=''">CLEAR</button><div id="forensicIocOutput" class="module-output">Extracted indicators will appear here.</div></div>
+            <div class="module-card"><h3>2 · Text fingerprinting</h3><p>Generate reproducible hashes for the exact text you paste. For file evidence, use the evidence upload workflow, which hashes the uploaded file bytes.</p><label class="module-label">Text to fingerprint</label><textarea id="forensicHashText" class="module-input" rows="7" placeholder="Paste exact text to calculate fingerprints…"></textarea><button class="module-button" onclick="fingerprintForensicText()">CALCULATE HASHES</button><div id="forensicHashOutput" class="module-output">SHA-256 and SHA-1 results will appear here.</div></div>
+            <div class="module-card"><h3>3 · Evidence handling checklist</h3><div class="module-list"><div class="module-item">Preserve the original file or message export; work on a copy.</div><div class="module-item">Record who collected it, when, from which source, and any transfer between handlers.</div><div class="module-item">Keep hashes with the evidence record and verify after transfers.</div><div class="module-item">Do not open suspicious links or execute unknown attachments during triage.</div><div class="module-item">Treat extracted IPs/domains/hashes as leads; do not claim attribution from indicators alone.</div></div><button class="module-button" onclick="goToModule('incidentModule')">OPEN EVIDENCE & CASE WORKSPACE</button></div>
+            <div class="module-card"><h3>4 · Investigation workflow</h3><div class="flow-step"><div class="flow-num">1</div><div><strong>Acquire</strong><br><span class="module-note">Record source and preserve originals.</span></div></div><div class="flow-step"><div class="flow-num">2</div><div><strong>Fingerprint</strong><br><span class="module-note">Calculate SHA-256 and verify integrity.</span></div></div><div class="flow-step"><div class="flow-num">3</div><div><strong>Examine</strong><br><span class="module-note">Extract candidate indicators and correlate with the scan.</span></div></div><div class="flow-step"><div class="flow-num">4</div><div><strong>Document</strong><br><span class="module-note">Add timeline events and export the case report.</span></div></div><p class="module-note">Limitations: no disk imaging, memory acquisition, malware detonation, or court-grade chain-of-custody certification is provided.</p></div>
+          </div>
+        </section>
+
+        <section class="module-section" id="incidentModule">
+          <div class="module-head"><div><div class="module-title">Incident Response Workspace</div><div class="module-subtitle">ScamSathi's first-response workflow is integrated into the original ScamShield dashboard: create an incident, preserve evidence, verify integrity, build a timeline, and export a consolidated report.</div></div><span class="module-pill">SCAMSHIELD × SCAMSATHI</span></div>
+          <div class="module-grid">
+            <div class="module-card"><h3>＋ Create investigation case</h3><p>Convert a suspicious message or URL into a trackable incident. The description is screened with the same explainable heuristic engine.</p>
+              <label class="module-label">Incident title</label><input id="incidentTitle" class="module-input" placeholder="e.g. Suspicious bank SMS">
+              <label class="module-label">Incident category</label><select id="incidentType" class="module-input"><option>Suspicious message</option><option>Phishing URL</option><option>UPI / payment fraud</option><option>Impersonation</option><option>Prize / reward scam</option><option>Investment scam</option><option>Other / unknown</option></select>
+              <label class="module-label">Description / original message</label><textarea id="incidentDescription" class="module-input" rows="4" placeholder="Paste the message or describe what happened. Never include real passwords, PINs, or OTPs."></textarea>
+              <button class="module-button" onclick="createIncident()">CREATE INCIDENT</button><div id="incidentCreateResult" class="module-output" style="display:none"></div>
+            </div>
+            <div class="module-card"><h3>◎ Investigation cases</h3><p>Select a case to attach evidence and record events. Case records stay in the local SQLite database.</p><div class="module-toolbar"><select id="incidentSelect" class="module-input" onchange="loadIncidentDetail()"><option value="">Select an incident…</option></select><button class="module-button secondary" onclick="loadIncidents()">REFRESH</button></div><div id="incidentDetail" class="module-output"><div class="module-empty">Create or select an incident to begin.</div></div><div id="incidentReportLink"></div></div>
+          </div>
+          <div class="module-grid" style="margin-top:15px">
+            <div class="module-card"><h3>▣ Evidence preservation vault</h3><p>Preserve original files and record a SHA-256 digest. A matching hash checks stored bytes against the recorded digest; it does not prove authenticity or legal chain of custody.</p><form id="incidentEvidenceForm" onsubmit="uploadIncidentEvidence(event)"><label class="module-label">Evidence file (max 8 MB)</label><input class="module-input" type="file" id="incidentEvidenceFile" required accept=".png,.jpg,.jpeg,.webp,.pdf,.txt,.eml,.json,.csv,.log"><label class="module-label">Evidence notes</label><input class="module-input" id="incidentEvidenceNotes" placeholder="Source, received date, context…"><button class="module-button">PRESERVE EVIDENCE</button></form><div id="incidentEvidenceResult" class="module-output" style="display:none"></div></div>
+            <div class="module-card"><h3>⇢ Incident timeline</h3><p>Record observed events in chronological order. Keep entries factual and include the source where possible.</p><label class="module-label">Timeline event</label><input id="incidentEventText" class="module-input" placeholder="e.g. Called bank using official number"><div class="module-toolbar"><select id="incidentEventSeverity" class="module-input"><option value="info">Informational</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select><button class="module-button" onclick="addIncidentEvent()">ADD EVENT</button></div><div id="incidentTimeline" class="module-list"><div class="module-empty">Select an incident to view its timeline.</div></div></div>
+          </div>
+        </section>
+
+        <section class="module-section" id="scamDnaModule"><div class="module-head"><div><div class="module-title">🧬 Scam DNA — Explainable Risk Signals</div><div class="module-subtitle">Instead of only showing a number, this view explains which patterns contributed to the assessment. Run a scan first.</div></div></div><div class="module-card"><div id="scamDnaOutput" class="module-empty">Your most recent scan's explanations will appear here.</div></div></section>
+
+        <section class="module-section" id="attackFlowModule"><div class="module-head"><div><div class="module-title">⇩ Attack Flow Reconstruction</div><div class="module-subtitle">A response-oriented sequence inferred from observed indicators. This is a hypothesis to guide investigation, not proof of what happened.</div></div></div><div class="module-card"><div id="attackFlowOutput" class="module-empty">Run a scan to generate a provisional attack flow.</div></div></section>
+
+        <section class="module-section" id="qrModule"><div class="module-head"><div><div class="module-title">▦ QR & Link Safety Scanner</div><div class="module-subtitle">Decode a QR image and screen the resulting content. Do not open a decoded link automatically.</div></div></div><div class="module-card"><form id="scamShieldQrForm" onsubmit="scanQRImage(event)"><label class="module-label">QR image</label><input class="module-input" type="file" id="scamShieldQrFile" accept="image/*" required><button class="module-button">DECODE & ANALYZE</button></form><div id="scamShieldQrOutput" class="module-output" style="display:none"></div></div></section>
+
+        <section class="module-section" id="protectionModule"><div class="module-head"><div><div class="module-title">🛡 Protection & First Response</div><div class="module-subtitle">Practical next steps after a suspected scam. Always verify contact details independently.</div></div></div><div class="module-grid"><div class="module-card"><h3>If you have not interacted</h3><div class="module-list"><div class="module-item">1. Do not click the link, scan unknown QR codes again, or install an app from the message.</div><div class="module-item">2. Do not share OTPs, PINs, passwords, card details, or recovery codes.</div><div class="module-item">3. Open the official app or type the known website address yourself.</div><div class="module-item">4. Preserve the original message, sender details, timestamps, and screenshots.</div></div></div><div class="module-card"><h3>If money or account access is at risk</h3><div class="module-list"><div class="module-item">Contact your bank or payment provider using the number in its official app or card.</div><div class="module-item">Change affected passwords from a trusted device and revoke suspicious sessions.</div><div class="module-item">In India, for suspected financial cyber fraud, contact the national cybercrime helpline 1930 and verify the current reporting process through official government channels.</div><div class="module-item">Do not pay anyone who promises guaranteed recovery of lost money.</div></div></div></div><button class="module-button" onclick="goToModule('incidentModule')">OPEN INCIDENT RESPONSE WORKSPACE</button><p class="module-note">ScamShield is a first-response aid, not a substitute for your bank, law enforcement, or official cybercrime reporting services.</p></section>
+
+        <section class="module-section" id="reportsModule"><div class="module-head"><div><div class="module-title">▤ Reports & Integrations</div><div class="module-subtitle">Export scan results and consolidated incident reports. External lookups run only when server-side keys are configured.</div></div></div><div class="module-grid"><div class="module-card"><h3>Scan history export</h3><p>Download structured records of saved scans.</p><a class="module-button" href="/api/export.csv">EXPORT SCANS CSV</a><button class="module-button secondary" onclick="loadIncidents()">REFRESH CASES</button><div id="integrationSummary" class="module-output">Checking integration status…</div></div><div class="module-card"><h3>Investigation report</h3><p>Select an incident in the Incident Response Workspace to download a PDF that includes the description, evidence inventory and hashes, and timeline.</p><button class="module-button secondary" onclick="goToModule('incidentModule')">OPEN INCIDENT WORKSPACE</button></div></div></section>
+
+        <section class="module-section" id="historyModule"><div class="module-head"><div><div class="module-title">◷ Persistent Threat History</div><div class="module-subtitle">The original dashboard keeps its recent-scan panel; this view refreshes server-side history.</div></div><button class="module-button secondary" onclick="refreshThreatHistory()">REFRESH HISTORY</button></div><div class="module-card"><div id="persistentHistory" class="module-list"><div class="module-empty">Loading history…</div></div></div></section>
+
+</main>
+
+
+</div>
+
+
+
+<div id="accountModal" style="display:none;position:fixed;inset:0;background:#020813cc;z-index:100;place-items:center;padding:18px">
+ <div class="module-card" style="width:min(420px,100%);box-shadow:0 25px 80px #0009">
+  <div class="module-head"><div><div class="module-title" id="accountModalTitle">ScamShield account</div><div class="module-subtitle">Optional local account for scan history and records.</div></div><button class="module-button secondary" onclick="closeAuthModal()">CLOSE</button></div>
+  <form id="accountForm" onsubmit="submitAuthModal(event)"><div id="accountNameWrap"><label class="module-label">Name</label><input id="accountName" class="module-input" placeholder="Your name"></div><label class="module-label">Email</label><input id="accountEmail" class="module-input" type="email" required placeholder="you@example.com"><label class="module-label">Password</label><input id="accountPassword" class="module-input" type="password" required minlength="10" placeholder="At least 10 characters for registration"><button class="module-button" style="width:100%">CONTINUE</button></form>
+  <div class="module-toolbar" style="margin-top:12px"><button class="module-button secondary" onclick="setAuthModalMode('login')">SIGN IN</button><button class="module-button secondary" onclick="setAuthModalMode('register')">CREATE ACCOUNT</button><button id="signOutButton" class="module-button secondary" onclick="signOutModal()" style="display:none">SIGN OUT</button></div><div id="accountStatus" class="module-note"></div>
+ </div>
+</div>
+
+<!-- TOAST -->
+
+<div
+    id="toast"
+    class="toast"
+>
+    Scan completed.
+</div>
+
+
+<script>
+
+
+    // =====================================================
+    // LOCAL DATA
+    // =====================================================
+
+    let scanHistory = [];
+
+    let totalScans = 0;
+
+    let threatsDetected = 0;
+
+    let highRisk = 0;
+    let lastScanResult = null;
+    let selectedIncidentId = null;
+
+
+    // =====================================================
+    // LOAD SAVED SESSION
+    // =====================================================
+
+    function loadSession() {
+
+        try {
+
+            const saved =
+                localStorage.getItem("scamshield_history");
+
+            if (saved) {
+
+                scanHistory =
+                    JSON.parse(saved);
+
+                totalScans =
+                    scanHistory.length;
+
+                threatsDetected =
+                    scanHistory.filter(
+                        item =>
+                            item.score >= 40
+                    ).length;
+
+                highRisk =
+                    scanHistory.filter(
+                        item =>
+                            item.score >= 70
+                    ).length;
+
+            }
+
+        } catch (error) {
+
+            console.log(
+                "Could not load session history."
+            );
+
+        }
+
+
+        updateStats();
+
+        renderHistory();
+
+    }
+
+
+    // =====================================================
+    // UPDATE DASHBOARD STATS
+    // =====================================================
+
+    function updateStats() {
+
+        document.getElementById(
+            "totalScans"
+        ).textContent = totalScans;
+
+
+        document.getElementById(
+            "threatsDetected"
+        ).textContent = threatsDetected;
+
+
+        document.getElementById(
+            "highRisk"
+        ).textContent = highRisk;
+
+    }
+
+
+    // =====================================================
+    // SHOW TOAST
+    // =====================================================
+
+    function showToast(
+        message,
+        error = false
+    ) {
+
+        const toast =
+            document.getElementById("toast");
+
+        toast.textContent = message;
+
+        toast.classList.toggle(
+            "error",
+            error
+        );
+
+        toast.classList.add("show");
+
+
+        setTimeout(() => {
+
+            toast.classList.remove("show");
+
+        }, 2800);
+
+    }
+
+
+    // =====================================================
+    // SCAN URL
+    // =====================================================
+
+    async function scanURL() {
+
+        const input =
+            document.getElementById("urlInput");
+
+        const button =
+            document.getElementById("urlButton");
+
+        const url =
+            input.value.trim();
+
+
+        if (!url) {
+
+            showToast(
+                "Please enter a URL to scan.",
+                true
+            );
+
+            input.focus();
+
+            return;
+        }
+
+
+        button.disabled = true;
+
+        button.classList.add("loading");
+
+        button.textContent =
+            "⏳  ANALYZING URL...";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/scan-url",
+                    {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            url: url,
+                            message: ""
+                        })
+
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Backend returned " +
+                    response.status
+                );
+
+            }
+
+
+            const result =
+                await response.json();
+
+
+            displayResult(
+                result,
+                "URL Scan"
+            );
+            await refreshDashboardStats();
+            await loadNotifications();
+
+            showToast(
+                "URL analysis completed."
+            );
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            showToast(
+                "Could not connect to the SCAMSHIELD backend.",
+                true
+            );
+
+        }
+
+
+        button.disabled = false;
+
+        button.classList.remove("loading");
+
+        button.textContent =
+            "🔍  SCAN URL";
+
+    }
+
+
+    // =====================================================
+    // SCAN MESSAGE
+    // =====================================================
+
+    async function scanMessage() {
+
+        const input =
+            document.getElementById(
+                "messageInput"
+            );
+
+        const button =
+            document.getElementById(
+                "messageButton"
+            );
+
+        const message =
+            input.value.trim();
+
+
+        if (!message) {
+
+            showToast(
+                "Please enter a message to scan.",
+                true
+            );
+
+            input.focus();
+
+            return;
+        }
+
+
+        button.disabled = true;
+
+        button.classList.add("loading");
+
+        button.textContent =
+            "⏳  ANALYZING MESSAGE...";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/scan-message",
+                    {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            url: "",
+                            message: message
+                        })
+
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Backend returned " +
+                    response.status
+                );
+
+            }
+
+
+            const result =
+                await response.json();
+
+
+            displayResult(
+                result,
+                "Message Scan"
+            );
+            await refreshDashboardStats();
+            await loadNotifications();
+
+            showToast(
+                "Message analysis completed."
+            );
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            showToast(
+                "Could not connect to the SCAMSHIELD backend.",
+                true
+            );
+
+        }
+
+
+        button.disabled = false;
+
+        button.classList.remove("loading");
+
+        button.textContent =
+            "🛡  SCAN MESSAGE";
+
+    }
+
+
+    // =====================================================
+    // DISPLAY RESULT
+    // =====================================================
+
+    function displayResult(
+        result,
+        scanType
+    ) {
+
+        lastScanResult = result;
+        renderScamDNA(result);
+        renderAttackFlow(result);
+
+        const score =
+            Number(result.score) || 0;
+
+
+        const risk =
+            result.risk ||
+            "SAFE";
+
+
+        const threatType =
+            result.threat_type ||
+            "No Obvious Threat";
+
+
+        const indicators =
+            result.indicators ||
+            result.warnings ||
+            [];
+
+
+        // -----------------------------------------------
+        // SHOW RESULT
+        // -----------------------------------------------
+
+        document.getElementById(
+            "emptyResult"
+        ).style.display = "none";
+
+
+        document.getElementById(
+            "resultContent"
+        ).classList.add("show");
+
+
+        // -----------------------------------------------
+        // SCORE
+        // -----------------------------------------------
+
+        document.getElementById(
+            "scoreNumber"
+        ).textContent = score;
+
+
+        updateScoreRing(score);
+
+
+        // -----------------------------------------------
+        // RISK
+        // -----------------------------------------------
+
+        const riskBadge =
+            document.getElementById(
+                "riskBadge"
+            );
+
+
+        riskBadge.className =
+            "risk-badge";
+
+
+        if (
+            risk === "HIGH RISK" ||
+            score >= 70
+        ) {
+
+            riskBadge.classList.add(
+                "high"
+            );
+
+            riskBadge.textContent =
+                "🔴 HIGH RISK";
+
+        }
+
+        else if (
+            risk === "SUSPICIOUS" ||
+            score >= 40
+        ) {
+
+            riskBadge.classList.add(
+                "suspicious"
+            );
+
+            riskBadge.textContent =
+                "⚠️ SUSPICIOUS";
+
+        }
+
+        else {
+
+            riskBadge.textContent =
+                "🟢 SAFE";
+
+        }
+
+
+        // -----------------------------------------------
+        // THREAT NAME
+        // -----------------------------------------------
+
+        document.getElementById(
+            "threatName"
+        ).textContent =
+            risk === "SAFE"
+                ? "No Obvious Threat"
+                : threatType;
+
+
+        // -----------------------------------------------
+        // THREAT TYPE
+        // -----------------------------------------------
+
+        document.getElementById(
+            "threatType"
+        ).textContent =
+            threatType;
+
+
+        // -----------------------------------------------
+        // INDICATORS
+        // -----------------------------------------------
+
+        renderIndicators(
+            indicators,
+            score
+        );
+
+
+        // -----------------------------------------------
+        // HISTORY
+        // -----------------------------------------------
+
+        addHistory({
+
+            type: scanType,
+
+            score: score,
+
+            risk: risk,
+
+            threatType: threatType,
+
+            time:
+                new Date().toLocaleString()
+
+        });
+
+    }
+
+
+    // =====================================================
+    // SCORE RING
+    // =====================================================
+
+    function updateScoreRing(score) {
+
+        const ring =
+            document.getElementById(
+                "scoreRing"
+            );
+
+
+        const degrees =
+            (score / 100) * 360;
+
+
+        ring.style.background =
+            `
+            conic-gradient(
+                #278aff 0deg,
+                #06b9d1 ${degrees}deg,
+                #15263f ${degrees}deg,
+                #15263f 360deg
+            )
+            `;
+
+    }
+
+
+    // =====================================================
+    // INDICATORS
+    // =====================================================
+
+    function renderIndicators(
+        indicators,
+        score
+    ) {
+
+        const container =
+            document.getElementById(
+                "indicatorList"
+            );
+
+
+        const count =
+            document.getElementById(
+                "indicatorCount"
+            );
+
+
+        if (
+            !indicators ||
+            indicators.length === 0
+        ) {
+
+            container.innerHTML = `
+
+                <div class="indicator">
+
+                    <div class="indicator-icon">
+                        ✓
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            No Major Indicators
+                        </strong>
+
+                        <div
+                            style="
+                                color:#465974;
+                                font-size:8px;
+                                margin-top:3px;
+                            "
+                        >
+                            No obvious scam indicators detected.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            `;
+
+            count.textContent =
+                "0 DETECTED";
+
+            return;
+        }
+
+
+        count.textContent =
+            indicators.length +
+            " DETECTED";
+
+
+        container.innerHTML = "";
+
+
+        indicators.forEach(
+            (indicator, index) => {
+
+                let className =
+                    "indicator";
+
+
+                if (score >= 70) {
+
+                    className +=
+                        " danger";
+
+                }
+
+                else if (score >= 40) {
+
+                    className +=
+                        " warning";
+
+                }
+
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                div.className =
+                    className;
+
+
+                div.innerHTML = `
+
+                    <div class="indicator-icon">
+                        ${score >= 70 ? "!" : "⚠"}
+                    </div>
+
+                    <div>
+                        ${escapeHTML(indicator)}
+                    </div>
+
+                `;
+
+
+                container.appendChild(div);
+
+            }
+        );
+
+    }
+
+
+    // =====================================================
+    // HISTORY
+    // =====================================================
+
+    function addHistory(item) {
+
+        scanHistory.unshift(item);
+
+
+        if (scanHistory.length > 10) {
+
+            scanHistory =
+                scanHistory.slice(0, 10);
+
+        }
+
+
+        totalScans =
+            scanHistory.length;
+
+
+        threatsDetected =
+            scanHistory.filter(
+                item =>
+                    item.score >= 40
+            ).length;
+
+
+        highRisk =
+            scanHistory.filter(
+                item =>
+                    item.score >= 70
+            ).length;
+
+
+        try {
+
+            localStorage.setItem(
+                "scamshield_history",
+                JSON.stringify(scanHistory)
+            );
+
+        } catch (error) {
+
+            console.log(
+                "Could not save history."
+            );
+
+        }
+
+
+        updateStats();
+
+        renderHistory();
+
+    }
+
+
+    // =====================================================
+    // RENDER HISTORY
+    // =====================================================
+
+    function renderHistory() {
+
+        const container =
+            document.getElementById(
+                "recentList"
+            );
+
+
+        if (
+            !scanHistory ||
+            scanHistory.length === 0
+        ) {
+
+            container.innerHTML = `
+
+                <div class="no-history">
+                    Your recent scans will appear here.
+                </div>
+
+            `;
+
+            return;
+        }
+
+
+        container.innerHTML = "";
+
+
+        scanHistory.forEach(item => {
+
+            let riskClass = "";
+
+
+            if (item.score >= 70) {
+
+                riskClass = "high";
+
+            }
+
+            else if (item.score >= 40) {
+
+                riskClass = "suspicious";
+
+            }
+
+
+            const icon =
+                item.type === "URL Scan"
+                    ? "🔗"
+                    : "💬";
+
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "recent-item";
+
+
+            div.innerHTML = `
+
+                <div class="recent-icon">
+                    ${icon}
+                </div>
+
+                <div class="recent-main">
+
+                    <div class="recent-type">
+                        ${escapeHTML(item.type)}
+                    </div>
+
+                    <div class="recent-time">
+                        ${escapeHTML(item.time)}
+                    </div>
+
+                </div>
+
+                <div class="recent-score">
+                    ${item.score}/100
+                </div>
+
+                <div class="recent-risk ${riskClass}">
+                    ${escapeHTML(item.risk)}
+                </div>
+
+            `;
+
+
+            container.appendChild(div);
+
+        });
+
+    }
+
+
+    // =====================================================
+    // COMING SOON
+    // =====================================================
+
+    function comingSoon(feature) {
+
+        showToast(
+            feature +
+            " is part of a future SCAMSHIELD phase."
+        );
+
+    }
+
+
+    // =====================================================
+    // ESCAPE HTML
+    // =====================================================
+
+    function escapeHTML(value) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent =
+            String(value);
+
+        return div.innerHTML;
+
+    }
+
+
+
+    // =====================================================
+    // SCAMSATHI: INTEGRATED INVESTIGATION WORKSPACE
+    // =====================================================
+    let authModalMode = 'login';
+    document.getElementById('accountNameWrap').style.display='none';
+    let signedInUser = null;
+    function openAuthModal(){document.getElementById('accountModal').style.display='grid';refreshAuthStatus();}
+    function closeAuthModal(){document.getElementById('accountModal').style.display='none';}
+    async function setAuthModalMode(mode){authModalMode=mode;document.getElementById('accountModalTitle').textContent=mode==='login'?'Sign in to ScamShield':'Create ScamShield account';document.getElementById('accountNameWrap').style.display=mode==='register'?'block':'none';document.getElementById('accountPassword').minLength=mode==='register'?10:1;document.getElementById('accountPassword').placeholder=mode==='register'?'At least 10 characters':'Your password';}
+    async function refreshAuthStatus(){try{const d=await apiRequest('/api/auth/me');signedInUser=d.user;document.getElementById('accountStatus').textContent=signedInUser?`Signed in as ${signedInUser.name} (${signedInUser.email}).`:'Not signed in. Anonymous demo mode is available; sign in for account-specific history.';document.getElementById('signOutButton').style.display=signedInUser?'inline-block':'none';document.getElementById('profileButton').textContent=signedInUser?(signedInUser.name.trim()[0]||'U').toUpperCase():'S';}catch(e){document.getElementById('accountStatus').textContent=e.message;}}
+    async function submitAuthModal(event){event.preventDefault();const payload={name:document.getElementById('accountName').value,email:document.getElementById('accountEmail').value,password:document.getElementById('accountPassword').value};try{const d=await apiRequest('/api/auth/'+(authModalMode==='register'?'register':'login'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});signedInUser=d.user;showToast(d.message);await refreshAuthStatus();await loadIncidents();await refreshThreatHistory();}catch(e){showToast(e.message,true);}}
+    async function signOutModal(){try{const d=await apiRequest('/api/auth/logout',{method:'POST'});signedInUser=null;showToast(d.message);await refreshAuthStatus();await loadIncidents();}catch(e){showToast(e.message,true);}}
+    async function createIncidentFromLastScan(){
+      if(!lastScanResult){showToast('Run a scan first.',true);return;}
+      const result=lastScanResult;const source=result.url||result.message||result.qr_content||'';
+      const description=`Source content:\n${source}\n\nScamShield screening result: ${result.score}/100 (${result.risk}); classification: ${result.threat_type}.\nIndicators:\n${(result.indicators||result.warnings||[]).join('\n')}`;
+      const title=`${result.threat_type||'Suspicious activity'} — scan #${result.id||'new'}`.slice(0,120);
+      try{const d=await apiRequest('/api/incidents',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title,incident_type:result.threat_type||'Suspicious activity',description})});selectedIncidentId=d.id;await loadIncidents();document.getElementById('incidentSelect').value=String(d.id);await loadIncidentDetail();goToModule('incidentModule');showToast(`Scan linked to new incident #${d.id}.`);}
+      catch(e){showToast(e.message,true);}
+    }
+
+    const dashboardContentIds = ['dashboardStats','dashboardScanners','dashboardResults','dashboardRecent'];
+    const workspaceIds = ['digitalForensicsModule','incidentModule','scamDnaModule','attackFlowModule','qrModule','protectionModule','reportsModule','historyModule'];
+    function setActiveNavigation(id) {
+        document.querySelectorAll('.sidebar .nav-item').forEach(item => { item.classList.remove('active'); item.removeAttribute('aria-current'); });
+        const item = document.querySelector(`.sidebar .nav-item[onclick*="${id}"]`) || document.getElementById('dashboardNav');
+        if(item){item.classList.add('active');item.setAttribute('aria-current','page');}
+    }
+    function showDashboard() {
+        dashboardContentIds.forEach(id => document.getElementById(id)?.classList.remove('workspace-hidden'));
+        workspaceIds.forEach(id => document.getElementById(id)?.classList.add('workspace-hidden'));
+        document.querySelector('.page-title').textContent='Security Dashboard';
+        document.querySelector('.page-subtitle').textContent='Real-time scam and phishing detection';
+        setActiveNavigation('dashboard');
+        document.querySelector('.main').scrollTo({top:0,behavior:'smooth'});
+        refreshDashboardStats();
+    }
+    function goToModule(id) {
+        const target = document.getElementById(id);
+        if (!target) return;
+        dashboardContentIds.forEach(key => document.getElementById(key)?.classList.add('workspace-hidden'));
+        workspaceIds.forEach(key => document.getElementById(key)?.classList.toggle('workspace-hidden', key !== id));
+        const heading = target.querySelector('.module-title');
+        document.querySelector('.page-title').textContent=heading?heading.textContent.trim():'ScamShield Workspace';
+        document.querySelector('.page-subtitle').textContent='Selected security investigation workspace';
+        setActiveNavigation(id);
+        document.querySelector('.main').scrollTo({top:0,behavior:'smooth'});
+        if(id==='historyModule') refreshThreatHistory();
+        if(id==='incidentModule') loadIncidents();
+        if(heading) showToast(heading.textContent.trim());
+    }
+    async function refreshDashboardStats(){
+      try { const d=await apiRequest('/api/stats');
+        document.getElementById('totalScans').textContent=d.total_scans;
+        document.getElementById('threatsDetected').textContent=d.threats_detected;
+        document.getElementById('highRisk').textContent=d.high_risk;
+        const status=document.querySelector('.engine-text'); if(status) status.textContent=`Database-backed statistics refreshed · ${d.engine_status}`;
+        await refreshThreatHistory();
+      } catch(e){console.warn('Dashboard stats unavailable',e);}
+    }
+    async function loadNotifications(){
+      const target=document.getElementById('notificationItems');
+      try{const d=await apiRequest('/api/notifications');
+        target.innerHTML=d.items.map(n=>`<div class="notification-row"><strong>${escapeHTML(n.title||'Activity')}</strong><div>${escapeHTML(n.detail||'')}</div><small>${escapeHTML(n.created_at||'')} · ${escapeHTML(n.severity||'info')}</small></div>`).join('')||'<div class="module-empty">No activity yet. Your scans and investigation updates will appear here.</div>';
+        const count=document.getElementById('notificationCount');count.textContent=d.unread_count;count.style.display=d.unread_count?'grid':'none';
+      }catch(e){target.innerHTML=`<div class="module-empty">${escapeHTML(e.message)}</div>`;}
+    }
+    async function toggleNotifications(event){
+      event?.stopPropagation(); const panel=document.getElementById('notificationPanel');const opening=panel.style.display==='none';panel.style.display=opening?'block':'none';document.getElementById('notificationButton').setAttribute('aria-expanded',String(opening));if(opening)await loadNotifications();
+    }
+    document.addEventListener('click',event=>{const panel=document.getElementById('notificationPanel');if(panel&&panel.style.display!=='none'&&!panel.contains(event.target)&&!event.target.closest('#notificationButton')){panel.style.display='none';document.getElementById('notificationButton').setAttribute('aria-expanded','false');}});
+
+    async function apiRequest(url, options={}) {
+        const response = await fetch(url, options);
+        let payload = {};
+        try { payload = await response.json(); } catch (_) {}
+        if (!response.ok) throw new Error(payload.error || `Request failed (${response.status})`);
+        return payload;
+    }
+
+    function renderScamDNA(result) {
+        const target = document.getElementById('scamDnaOutput');
+        if (!target) return;
+        if (!result) { target.innerHTML = '<div class="module-empty">Run a scan to see its explanation.</div>'; return; }
+        const explanations = result.explanations || [];
+        const indicators = result.indicators || result.warnings || [];
+        target.innerHTML = `<div><span class="module-pill">SCORE ${Number(result.score)||0}/100</span><span class="module-pill">${escapeHTML(result.risk||'UNASSESSED')}</span><span class="module-pill">${escapeHTML(result.threat_type||'Unknown')}</span></div><div class="module-list">${(explanations.length?explanations:indicators.map(x=>({indicator:x,why:'Matched a configured screening pattern.',points:0}))).map(x=>`<div class="module-item"><strong>${escapeHTML(x.indicator)}</strong> <span class="module-pill">+${Number(x.points)||0}</span><br>${escapeHTML(x.why||'')}</div>`).join('')||'<div class="module-empty">No configured indicators matched. This does not prove safety.</div>'}</div><button class="module-button" onclick="createIncidentFromLastScan()">CREATE INCIDENT FROM THIS SCAN</button><p class="module-note">Explainable heuristic signals are indicators, not a definitive verdict.</p>`;
+    }
+
+    function renderAttackFlow(result) {
+        const target = document.getElementById('attackFlowOutput');
+        if (!target) return;
+        if (!result) { target.innerHTML = '<div class="module-empty">Run a scan to generate a provisional flow.</div>'; return; }
+        const text = `${result.url||''} ${result.message||''}`.toLowerCase();
+        const indicators = result.indicators || result.warnings || [];
+        const steps = [
+          ['Delivery / lure', text.includes('http') || text.includes('click') || text.includes('link') ? 'A link or clickable lure may be part of the message.' : 'A message or URL was submitted for screening.'],
+          ['Social engineering', /urgent|immediately|blocked|suspend|winner|prize|verify|act now/.test(text) ? 'Pressure, impersonation, or reward language may influence the recipient.' : 'No common urgency/reward phrase was detected by this simple flow heuristic.'],
+          ['Target / requested action', /otp|password|pin|credential|bank|upi|payment|card|money/.test(text) ? 'Potential credential, payment, or financial target indicated by the content.' : 'Target action is not clear from the available text.'],
+          ['Potential impact', Number(result.score)>=40 ? 'Risk signals justify stopping interaction and verifying through an independent channel.' : 'Insufficient configured signals; verify independently before trusting it.'],
+          ['Response / evidence', 'Preserve the original message, sender metadata, screenshots, and timestamps; link them to an incident case.']
+        ];
+        target.innerHTML = `<div><span class="module-pill">PROVISIONAL FLOW</span><span class="module-pill">${indicators.length} indicator(s)</span></div><div style="margin-top:12px">${steps.map((x,i)=>`<div class="flow-step"><div class="flow-num">${i+1}</div><div><strong>${escapeHTML(x[0])}</strong><div class="module-subtitle">${escapeHTML(x[1])}</div></div></div>`).join('')}</div><p class="module-note">This flow is inferred from text patterns. It is not forensic attribution and does not establish that every stage occurred.</p>`;
+    }
+
+    async function createIncident() {
+        const title=document.getElementById('incidentTitle').value.trim();
+        const incident_type=document.getElementById('incidentType').value;
+        const description=document.getElementById('incidentDescription').value.trim();
+        try {
+          const result=await apiRequest('/api/incidents',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title,incident_type,description})});
+          document.getElementById('incidentCreateResult').style.display='block';
+          document.getElementById('incidentCreateResult').innerHTML=`<strong>Incident #${result.id} created.</strong><br>Screening score: ${result.analysis_score}/100 (${escapeHTML(result.analysis_level)}).<br>${(result.indicators||[]).map(x=>`<span class="module-pill">${escapeHTML(x)}</span>`).join('')}`;
+          selectedIncidentId=result.id;
+          await loadIncidents();
+          document.getElementById('incidentSelect').value=String(result.id);
+          await loadIncidentDetail();
+          showToast('Incident created and description screened.');
+        } catch(e) { showToast(e.message,true); }
+    }
+
+    async function loadIncidents() {
+        try {
+          const data=await apiRequest('/api/incidents');
+          const select=document.getElementById('incidentSelect');
+          const old=selectedIncidentId || select.value;
+          select.innerHTML='<option value="">Select an incident…</option>'+data.items.map(x=>`<option value="${x.id}">#${x.id} · ${escapeHTML(x.title)}</option>`).join('');
+          if(old && data.items.some(x=>String(x.id)===String(old))) select.value=String(old);
+          if(select.value) { selectedIncidentId=Number(select.value); await loadIncidentDetail(); }
+          else document.getElementById('incidentDetail').innerHTML=data.items.length?'<div class="module-empty">Choose a case above.</div>':'<div class="module-empty">No cases yet. Create the first incident.</div>';
+        } catch(e) { document.getElementById('incidentDetail').innerHTML=`<div class="module-empty">${escapeHTML(e.message)}</div>`; }
+    }
+
+    async function loadIncidentDetail() {
+        const value=document.getElementById('incidentSelect').value;
+        if(!value){selectedIncidentId=null;document.getElementById('incidentDetail').innerHTML='<div class="module-empty">Select an incident to begin.</div>';document.getElementById('incidentTimeline').innerHTML='<div class="module-empty">Select an incident to view its timeline.</div>';document.getElementById('incidentReportLink').innerHTML='';return;}
+        selectedIncidentId=Number(value);
+        try {
+          const data=await apiRequest(`/api/incidents/${selectedIncidentId}`);const c=data.incident;
+          document.getElementById('incidentDetail').innerHTML=`<strong>#${c.id} · ${escapeHTML(c.title)}</strong><br><span class="module-pill">${escapeHTML(c.incident_type)}</span><span class="module-pill">${c.analysis_score}/100 · ${escapeHTML(c.analysis_level)}</span><p style="margin-top:8px">${escapeHTML(c.description)}</p><div class="module-list">${data.evidence.map(e=>`<div class="module-item"><strong>${escapeHTML(e.original_name)}</strong><br>${e.size_bytes} bytes · ${escapeHTML(e.sha256)}<br><button class="module-button secondary" onclick="verifyIncidentEvidence(${e.id})">VERIFY HASH</button><a class="module-button secondary" href="/api/incident-evidence/${e.id}/download">DOWNLOAD</a><span id="hashStatus${e.id}"></span></div>`).join('')||'<div class="module-empty">No evidence attached yet.</div>'}</div>`;
+          document.getElementById('incidentTimeline').innerHTML=data.events.map(e=>`<div class="module-item"><span class="module-pill">${escapeHTML(e.severity)}</span><strong>${escapeHTML(e.event_time)}</strong><br>${escapeHTML(e.event_text)}</div>`).join('')||'<div class="module-empty">No events yet.</div>';
+          document.getElementById('incidentReportLink').innerHTML=`<a class="module-button" href="/api/incidents/${c.id}/report.pdf">DOWNLOAD INCIDENT PDF</a>`;
+        } catch(e) { showToast(e.message,true); }
+    }
+
+    async function uploadIncidentEvidence(event) {
+        event.preventDefault();
+        if(!selectedIncidentId){showToast('Create or select an incident first.',true);return;}
+        const file=document.getElementById('incidentEvidenceFile').files[0];if(!file)return;
+        const form=new FormData();form.append('file',file);form.append('notes',document.getElementById('incidentEvidenceNotes').value);
+        try {const data=await apiRequest(`/api/incidents/${selectedIncidentId}/evidence`,{method:'POST',body:form});const out=document.getElementById('incidentEvidenceResult');out.style.display='block';out.innerHTML=`<strong>Evidence preserved.</strong><br>${escapeHTML(data.original_name)}<br>SHA-256: ${escapeHTML(data.sha256)}`;document.getElementById('incidentEvidenceForm').reset();await loadIncidentDetail();showToast('Evidence hash recorded.');}
+        catch(e){showToast(e.message,true);}
+    }
+
+    async function verifyIncidentEvidence(id) {
+        try {const d=await apiRequest(`/api/incident-evidence/${id}/verify`,{method:'POST'});const el=document.getElementById(`hashStatus${id}`);el.className=d.verified?'module-status':'module-danger';el.textContent=d.verified?' ✓ HASH MATCH':' ⚠ HASH MISMATCH';}
+        catch(e){showToast(e.message,true);}
+    }
+
+    async function addIncidentEvent() {
+        if(!selectedIncidentId){showToast('Select an incident first.',true);return;}
+        const event_text=document.getElementById('incidentEventText').value.trim();const severity=document.getElementById('incidentEventSeverity').value;
+        if(!event_text){showToast('Enter a timeline event.',true);return;}
+        try {await apiRequest(`/api/incidents/${selectedIncidentId}/events`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event_text,severity})});document.getElementById('incidentEventText').value='';await loadIncidentDetail();showToast('Timeline event recorded.');}
+        catch(e){showToast(e.message,true);}
+    }
+
+    async function scanQRImage(event) {
+        event.preventDefault();const file=document.getElementById('scamShieldQrFile').files[0];if(!file)return;
+        const form=new FormData();form.append('file',file);
+        try {const data=await apiRequest('/api/qr/scan',{method:'POST',body:form});const out=document.getElementById('scamShieldQrOutput');out.style.display='block';out.innerHTML=`<strong>Decoded content</strong><br>${escapeHTML(data.qr_content||data.url||'')}<br><span class="module-pill">${escapeHTML(data.risk)}</span><span class="module-pill">Score ${data.score}/100</span><br>${(data.indicators||[]).map(x=>`<span class="module-pill">${escapeHTML(x)}</span>`).join('')}`;lastScanResult=data;renderScamDNA(data);renderAttackFlow(data);showToast('QR decoded and screened.');}
+        catch(e){showToast(e.message,true);}
+    }
+
+    async function refreshThreatHistory() {
+        try {
+          const d=await apiRequest('/api/history');
+          const target=document.getElementById('persistentHistory');
+          target.innerHTML=d.items.map(x=>`<div class="module-item"><strong>#${x.id} · ${escapeHTML(x.threat_type)}</strong><span class="module-pill">${x.score}/100 · ${escapeHTML(x.risk)}</span><br>${escapeHTML(x.created_at)}<br>${escapeHTML((x.url||x.message||'').slice(0,200))}<br><a class="module-button secondary" href="/api/report/${x.id}.pdf">PDF REPORT</a></div>`).join('')||'<div class="module-empty">No scans saved for this account yet.</div>';
+          const recent=document.getElementById('recentList');
+          if(recent) recent.innerHTML=d.items.slice(0,6).map(x=>`<div class="recent-item"><div class="recent-main"><strong>${escapeHTML(x.scan_type||'Security Scan')}</strong><span>${escapeHTML(x.threat_type)}</span></div><div class="recent-score"><span class="module-pill">${x.score}/100</span><span class="module-pill">${escapeHTML(x.risk)}</span><small>${escapeHTML(x.created_at)}</small></div></div>`).join('')||'<div class="no-history">No saved scans yet. Run a URL or message scan to begin.</div>';
+        } catch(e){console.warn('Could not refresh history',e);}
+    }
+
+    async function extractForensicIOCs() {
+      const textValue=document.getElementById('forensicIocText').value;
+      try { const d=await apiRequest('/api/forensics/ioc-extract',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:textValue})});
+        const target=document.getElementById('forensicIocOutput');
+        target.innerHTML=Object.entries(d.indicators).map(([label,items])=>`<div style="margin-bottom:9px"><strong>${escapeHTML(label)} <span class="module-pill">${items.length}</span></strong><div>${items.length?items.map(v=>`<div class="module-item">${escapeHTML(v)}</div>`).join(''):'<span class="module-note">None found</span>'}</div></div>`).join('')+`<p class="module-note">${escapeHTML(d.note)}</p>`;
+        showToast('Indicator extraction complete.');
+      } catch(e) { showToast(e.message,true); }
+    }
+    async function fingerprintForensicText() {
+      const textValue=document.getElementById('forensicHashText').value;
+      try { const d=await apiRequest('/api/forensics/text-fingerprint',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:textValue})});
+        document.getElementById('forensicHashOutput').innerHTML=`<strong>SHA-256</strong><div class="module-item">${escapeHTML(d.sha256)}</div><button class="module-button secondary" onclick="GenCopyText('${d.sha256}')">COPY SHA-256</button><strong>SHA-1</strong><div class="module-item">${escapeHTML(d.sha1)}</div><div class="module-note">${d.bytes} UTF-8 bytes · ${d.characters} characters. ${escapeHTML(d.note)}</div>`;
+        showToast('Text fingerprints calculated.');
+      } catch(e) { showToast(e.message,true); }
+    }
+    function GenCopyText(value) { if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(value).then(()=>showToast('Copied.')).catch(()=>showToast(value)); else showToast(value); }
+
+    async function loadIntegrationSummary() {
+        try {const d=await apiRequest('/api/integrations/status');document.getElementById('integrationSummary').innerHTML=Object.entries(d).map(([k,v])=>`<div><strong>${escapeHTML(k.replaceAll('_',' '))}</strong>: ${escapeHTML(v.status)}</div>`).join('')+'<p class="module-note">External URL reputation lookups may send the URL to configured third-party providers. Message text is not sent by these lookups.</p>';}
+        catch(e){document.getElementById('integrationSummary').textContent=e.message;}
+    }
+
+
+    // =====================================================
+    // START
+    // =====================================================
+
+    loadSession();
+    showDashboard();
+    loadIncidents();
+    refreshThreatHistory();
+    loadIntegrationSummary();
+    refreshAuthStatus();
+    loadNotifications();
+
+
+</script>
+
+
+</body>
+
+</html>

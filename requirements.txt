@@ -1,0 +1,7 @@
+Flask>=3.0,<4.0
+reportlab>=4.0,<5.0
+# Optional QR decoder:
+opencv-python-headless>=4.9,<5.0
+numpy>=1.26,<3.0
+# Optional provider integrations can be added using server-side API keys.
+requests>=2.31,<3.0
