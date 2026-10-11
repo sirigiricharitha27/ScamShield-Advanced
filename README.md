@@ -1,123 +1,214 @@
-# ScamShield × ScamSathi — Full-stack scam screening and incident response
+# ScamShield Advanced — AI-Powered Scam Detection & Digital Forensics
 
-This combined educational project preserves the original ScamShield dashboard layout and integrates ScamSathi's first-response investigation workflow into the same application.
+ScamShield Advanced is a cybersecurity and digital forensics platform designed to analyze suspicious messages and URLs, explain potential scam indicators, support incident investigations, and help preserve digital evidence integrity. It brings scam screening, threat analysis, evidence management, and investigation reporting into one unified application.
 
-## What is combined
+## Key Features
 
-### ScamShield core
-- Original dark dashboard UI and scanner interaction flow
-- URL and message scanning with explainable indicators and risk scores
-- Persistent scan history and dashboard statistics in SQLite
-- Scam DNA explanations and provisional attack-flow reconstruction
-- Optional QR image decoding and scan follow-up
-- PDF scan reports, JSON reports, CSV export
-- Optional live VirusTotal and Google Safe Browsing URL lookups when API keys are configured
+### 1. Scam Detection & Threat Analysis
 
-### ScamSathi first-response workflow
-- Incident/case creation with the description screened by the shared rule engine
-- Evidence upload tied to a selected incident
-- SHA-256 evidence integrity recording and re-verification
-- Incident timeline entries and automatically recorded evidence events
-- Consolidated incident PDF report containing case details, evidence inventory/hashes, and timeline
-- Protection guidance and a case-based workflow from screening to documentation
+- Dark-themed dashboard with an intuitive scanning interface.
+- URL and message scanning with explainable indicators and risk scores.
+- Persistent scan history and dashboard statistics backed by SQLite.
+- Scam DNA explanations showing the indicators behind a detection result.
+- Provisional attack-flow reconstruction based on suspicious text indicators.
+- Optional QR image decoding followed by URL or message screening.
+- PDF and JSON scan reports with CSV export.
+- Optional VirusTotal and Google Safe Browsing URL reputation lookups when API keys are configured.
+- Contextual detection rules for suspicious rewards, giveaways, urgent requests, payment requests, and potentially impersonated identities.
 
-## Novelty direction
+### 2. Digital Forensics & Incident Response
 
-The main differentiator is a **screen → explain → reconstruct → investigate → preserve → verify → report** workflow. A scan can be used as the starting point for an incident; Scam DNA explains the rule signals; Attack Flow provides a cautious, inferred sequence; the incident workspace records evidence and a timeline; hash checks help detect changes to stored bytes; and the final PDF gathers the investigation record. These outputs are decision-support aids, not proof of fraud or legal chain of custody.
+- Investigation case creation and management.
+- Evidence uploads associated with investigation cases.
+- SHA-256 evidence hashing and integrity re-verification.
+- Incident timeline entries and recorded evidence activity.
+- Consolidated PDF investigation reports containing case details, evidence inventories, hashes, and timeline events.
+- Incident response guidance and structured investigation workflows.
+- Account-scoped access to scans, evidence, timelines, and investigation cases.
 
-## Run locally (Windows / VS Code)
+### 3. Digital Forensics Laboratory
 
-1. Extract the ZIP and open the project folder in VS Code.
-2. In the terminal:
+- Candidate Indicator of Compromise (IOC) extraction from text.
+- Extraction of URLs, domains, email addresses, IPv4 addresses, hash-shaped strings, and phone-like strings.
+- Text fingerprinting using SHA-256 and SHA-1.
+- UTF-8 byte count and character count calculation.
+- Evidence integrity checks to identify changes between the current file and its recorded digest.
+
+## Investigation Workflow
+
+**Screen → Explain → Reconstruct → Investigate → Preserve → Verify → Report**
+
+ScamShield Advanced supports a structured workflow from initial screening to investigation documentation.
+
+1. **Screen:** Analyze a suspicious URL or message using transparent detection rules.
+2. **Explain:** Review the indicators contributing to the risk score.
+3. **Reconstruct:** Examine a provisional attack-flow hypothesis inferred from available text indicators.
+4. **Investigate:** Create an incident case and record relevant details.
+5. **Preserve:** Upload and organize digital evidence.
+6. **Verify:** Compare the current evidence hash against the previously recorded digest.
+7. **Report:** Generate a report containing case information, evidence details, hashes, and timeline entries.
+
+These capabilities are decision-support aids. They do not independently prove fraud, establish attacker identity, or certify a legal chain of custody.
+
+## Run Locally (Windows / VS Code)
+
+### Prerequisites
+
+- Python installed on your system.
+- Visual Studio Code or another Python-compatible editor.
+- Git, if you want to clone the repository.
+
+### Installation
+
+1. Clone the repository or download the project files.
+2. Open the project folder in VS Code.
+3. Open the integrated terminal.
+4. Create and activate a virtual environment:
 
    ```powershell
    py -m venv .venv
    .\.venv\Scripts\Activate.ps1
+   ```
+
+5. Install the required dependencies:
+
+   ```powershell
    python -m pip install -r requirements.txt
+   ```
+
+6. Start the Flask application:
+
+   ```powershell
    python app.py
    ```
 
-3. Visit `http://127.0.0.1:5000`.
+7. Open the following address in your browser:
 
-The SQLite database and evidence files are created locally on first use. QR decoding needs OpenCV; PDF reports need ReportLab.
+   http://127.0.0.1:5000
 
-## Optional external reputation providers
+The SQLite database and evidence files are stored locally and created as required by the application. QR decoding requires OpenCV, and PDF report generation requires ReportLab.
 
-Set `VIRUSTOTAL_API_KEY` and/or `GOOGLE_SAFE_BROWSING_API_KEY` in your local environment. Never commit real keys to GitHub. When configured, only the URL is sent to the provider; message text is not sent by these URL lookups. Third-party lookup availability and rate limits apply. If no key is configured, the local explainable rules still work.
+## Optional External Reputation Providers
 
-## API endpoints
+ScamShield Advanced can use optional external URL reputation services when their API credentials are configured.
 
-- `GET /api/health`
-- `POST /api/scan` (also `/scan`, `/scan-url`, `/scan-message` for compatibility with the original UI)
-- `GET /api/stats`, `GET /api/history`, `GET /api/scan/<id>`, `DELETE /api/scan/<id>`
-- `POST /api/incidents`, `GET /api/incidents`, `GET /api/incidents/<id>`
-- `POST /api/incidents/<id>/evidence`, `POST /api/incidents/<id>/events`
-- `POST /api/incident-evidence/<id>/verify`, `GET /api/incident-evidence/<id>/download`
-- `GET /api/incidents/<id>/report.pdf`
-- `POST /api/evidence`, `GET /api/evidence`, `POST /api/evidence/<id>/verify`, `GET /api/evidence/<id>/download`
-- `GET /api/timeline`, `POST /api/timeline`
-- `GET /api/report/<id>.pdf`, `GET /api/report/<id>.json`, `GET /api/export.csv`
-- `POST /api/qr/scan`, `GET /api/integrations/status`
+Supported integrations:
 
-## Tests
+- VirusTotal
+- Google Safe Browsing
+
+Configure `VIRUSTOTAL_API_KEY` and/or `GOOGLE_SAFE_BROWSING_API_KEY` in your local environment.
+
+Never commit real API keys or other secrets to GitHub.
+
+The configured URL lookups send URLs to the selected provider; message text is not sent by these URL lookups. Provider availability, privacy terms, and rate limits apply. Local rule-based screening remains available without external API keys.
+
+## API Endpoints
+
+### Health, Scanning & History
+
+- `GET /api/health` — Check application health.
+- `POST /api/scan` — Analyze a URL or message.
+- `GET /api/stats` — Retrieve dashboard statistics.
+- `GET /api/history` — Retrieve scan history.
+- `GET /api/scan/<id>` — Retrieve an individual scan.
+- `DELETE /api/scan/<id>` — Delete a scan.
+
+The application also supports the following scan routes for compatibility with the existing interface:
+
+- `POST /scan`
+- `POST /scan-url`
+- `POST /scan-message`
+
+### Incident & Evidence Management
+
+- `POST /api/incidents` — Create an investigation case.
+- `GET /api/incidents` — Retrieve investigation cases.
+- `GET /api/incidents/<id>` — Retrieve an individual case.
+- `POST /api/incidents/<id>/evidence` — Upload evidence associated with a case.
+- `POST /api/incidents/<id>/events` — Add a case timeline event.
+- `POST /api/incident-evidence/<id>/verify` — Verify incident evidence integrity.
+- `GET /api/incident-evidence/<id>/download` — Download incident evidence.
+- `GET /api/incidents/<id>/report.pdf` — Generate an incident report.
+
+### General Evidence & Timeline
+
+- `POST /api/evidence` — Add evidence.
+- `GET /api/evidence` — Retrieve evidence records.
+- `POST /api/evidence/<id>/verify` — Verify evidence integrity.
+- `GET /api/evidence/<id>/download` — Download evidence.
+- `GET /api/timeline` — Retrieve timeline entries.
+- `POST /api/timeline` — Add a timeline entry.
+
+### Reports & Exports
+
+- `GET /api/report/<id>.pdf` — Generate a PDF report.
+- `GET /api/report/<id>.json` — Generate a JSON report.
+- `GET /api/export.csv` — Export scan records as CSV.
+
+### QR Scanning & Integrations
+
+- `POST /api/qr/scan` — Process a QR image for scanning.
+- `GET /api/integrations/status` — Retrieve integration status.
+
+### Digital Forensics Utilities
+
+- `POST /api/forensics/ioc-extract` — Accepts JSON such as `{"text":"..."}` and extracts candidate indicators.
+- `POST /api/forensics/text-fingerprint` — Accepts JSON such as `{"text":"..."}` and returns SHA-256, SHA-1, UTF-8 byte count, and character count.
+
+Endpoint availability and behavior should be confirmed against the current application implementation.
+
+## Testing
+
+Run the included test suite after installing the dependencies:
 
 ```powershell
 python -m unittest discover -s tests -v
 ```
 
-The included tests cover health, scan persistence, input validation, ScamSathi rule-pack integration, incident creation/timeline, and registration validation.
+The included tests cover health checks, scan persistence, input validation, detection rule integration, incident creation, timeline behavior, and registration validation.
 
-## Important limitations
+Run the tests locally to confirm the current build's behavior. Additional integration and security testing is recommended before public deployment.
 
-- The detector is transparent rule-based screening, not a trained ML model or a definitive scam/malware verdict. False positives and false negatives are possible.
-- Attack Flow is a provisional narrative inferred from text indicators; it does not establish that each stage occurred or attribute an attacker.
-- A low score is not proof of safety.
-- A matching SHA-256 digest means the current bytes match the recorded digest; it does not prove source, authenticity, trusted time, or legal chain of custody.
-- This is a local development starter, not production-hardened. Before public deployment, add CSRF protection, rate limiting, authorization/isolation for every case and file, encrypted evidence storage, retention policy, HTTPS, secure secret management, and a production WSGI server.
-- Keep secrets in environment variables. Do not commit `.env`, databases, uploads, real victim data, or API keys.
+## Advanced Dashboard Behaviors
 
-## Suggested future research extensions
+- The sidebar and main workspace use independent scrolling areas.
+- Selecting a sidebar module switches the visible workspace; Dashboard returns to the scan overview.
+- Dashboard statistics and recent activity are retrieved from SQLite.
+- The notification panel displays recent scan and investigation activity.
+- The profile menu provides account controls.
+- Detection includes contextual reward and suspicious-link rules, including examples such as `click link to get 50k`.
+- Signed-in users have account-scoped access to scans, evidence, timelines, and investigation cases.
 
-- Multilingual Telugu/English scam-language packs
-- URL lookalike/typosquatting and IDN similarity scoring
-- Consent-based email/SMS import connectors
-- Append-only signed audit log and trusted timestamping
-- Optional ML classifier evaluated against a labeled dataset, with precision/recall and calibration
-- Official reporting workflow links, user consent, and privacy-preserving data retention
+Keep `SCAMSHIELD_SECRET_KEY` stable across restarts for reliable sessions, and configure it explicitly for deployments.
 
+## Important Limitations & Security Notes
 
-## Advanced project edition — module map
+- The detector uses transparent rule-based screening. It is not a trained machine-learning model or a definitive scam or malware verdict.
+- False positives and false negatives are possible.
+- A low risk score does not prove that content is safe.
+- Attack-flow reconstruction is a provisional narrative inferred from text indicators. It does not establish that every stage occurred or identify an attacker.
+- A matching SHA-256 digest indicates that the current bytes match the recorded digest. It does not independently prove authenticity, source, trusted time, or legal chain of custody.
+- This is a local development project, not a production-hardened service.
+- Before public deployment, implement and test CSRF protection, rate limiting, authorization and isolation for every case and file, encrypted evidence storage, retention policies, HTTPS, secure secret management, and a production WSGI server.
+- Keep secrets in environment variables. Do not commit `.env` files, databases, evidence uploads, real victim data, or API keys.
+- Do not send confidential evidence to external services without appropriate authorization.
+- The application does not perform disk imaging, memory forensics, malware detonation, or live packet capture.
+- This project is not a certified forensic platform or a substitute for professional forensic examination.
 
-### Core platform
-- ScamShield URL/message risk triage with transparent heuristic indicators and a bounded 0–100 score.
-- Scam DNA explanations and a provisional attack-flow hypothesis (not forensic attribution).
-- QR image decoding and subsequent URL/message screening (requires OpenCV).
-- ScamSathi-inspired incident workspace: case records, evidence uploads, SHA-256 integrity verification, event timeline, and incident PDF report.
-- Dedicated Digital Forensics Laboratory: candidate IOC extraction from pasted text (URLs/domains, email addresses, IPv4, hash-shaped strings and phone-like strings) and text fingerprinting (SHA-256/SHA-1).
-- Scan history, CSV export, per-scan JSON/PDF reports, account endpoints, optional URL-reputation integrations.
+## Suggested Future Research Extensions
 
-### API additions
-- `POST /api/forensics/ioc-extract` — JSON body `{ "text": "..." }`; extracts candidate indicators.
-- `POST /api/forensics/text-fingerprint` — JSON body `{ "text": "..." }`; returns SHA-256, SHA-1, UTF-8 byte count, and character count.
+1. **Multilingual scam detection:** Add Telugu, English, Hindi, and Tanglish language patterns and evaluate them against a labeled dataset.
+2. **URL similarity analysis:** Detect lookalike domains, typosquatting, and internationalized domain name (IDN) similarities.
+3. **Email analysis:** Add consent-based email import, MIME-aware `.eml` parsing, and RFC email-header analysis.
+4. **Audit integrity:** Implement an append-only signed audit log containing the actor, timestamp, action, previous-event hash, and event hash, with trusted timestamping.
+5. **Threat intelligence:** Integrate passive DNS, WHOIS, and certificate transparency sources with caching and rate limits.
+6. **Machine-learning evaluation:** Add an optional classifier and measure precision, recall, and probability calibration against a labeled dataset.
+7. **Incident reporting:** Add official reporting links, explicit user consent, and privacy-preserving data retention.
+8. **Security testing:** Expand tests for file uploads, path traversal, oversized payloads, authentication, authorization, hash verification, and report generation.
 
-### Suggested research extensions
-1. Add a proper append-only chain-of-custody ledger with actor, timestamp, action, previous-event hash, and event hash.
-2. Add MIME-aware `.eml` parsing and RFC email-header analysis.
-3. Add passive DNS / WHOIS / certificate transparency connectors with rate limits and caching.
-4. Add Hindi/Telugu/Tanglish scam-language pattern packs with an evaluation dataset.
-5. Add role-based case access, CSRF protection, rate limiting, and deployment secret management before exposing it beyond localhost.
-6. Add unit/integration tests for uploads, path traversal, oversized payloads, hash verification, auth, and report generation.
+## Validation Note
 
-### Important limitations
-This is a defensive student project and a triage aid. It does not perform disk imaging, memory forensics, malware detonation, live packet capture, or court-grade chain-of-custody certification. Heuristic scores are not proof that a message is malicious; false positives and false negatives are possible. Never upload confidential evidence to external providers without authorization. Optional reputation integrations send URLs only, not message text. Keep the app bound to localhost unless you have hardened authentication, CSRF controls, rate limits, and deployment settings.
+Python syntax and embedded frontend JavaScript syntax were checked for this build. The test suite is included, but it must be run in an environment with the dependencies installed.
 
-## Advanced dashboard behaviors
-
-- The sidebar and workspace have independent scroll containers. Choosing a sidebar module hides the other workspaces; Dashboard returns to the scan overview.
-- Dashboard statistics and recent activity refresh from SQLite. The notification bell opens recent scan and investigation activity; the profile button opens account controls.
-- Detection includes contextual click-through reward rules, including examples such as `click link to get 50k`. Scores are explainable heuristic signals and must not be interpreted as proof that content is malicious or safe.
-- Signed-in users have account-scoped scan, evidence, timeline, and incident access. Keep `SCAMSHIELD_SECRET_KEY` stable across restarts for reliable sessions and configure it explicitly for deployments.
-
-## Validation note
-
-Python syntax and the embedded frontend JavaScript syntax have been checked for this build. The test suite is included, but it must be run in an environment where the dependencies in `requirements.txt` are installed. This package has not been represented as production-certified or as a substitute for a professional forensic platform.
+Features and integrations should be verified locally before being described as fully functional. ScamShield Advanced is an educational cybersecurity and digital forensics project and is not represented as production-certified.
